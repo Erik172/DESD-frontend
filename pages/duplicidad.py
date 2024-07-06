@@ -14,17 +14,17 @@ st.caption("V2.0 - Estable, con alta precisión 📊")
 uploaded_file = st.file_uploader("Subir Archivos", type=["jpg", "jpeg", "png", "tif", "tiff", "pdf"], accept_multiple_files=True)
 
 def work_status(result_id):
-    url = f"http://localhost:5000/v2/status/{result_id}"
+    url =f"{st.secrets['api_address']}/v2/status/{result_id}"
     response = requests.get(url)
     return response
 
 def process_uploaded_images(uploaded_file):
-    random_id = requests.get("http://localhost:5000/v2/generate_id").json()["random_id"]
+    random_id = requests.get(f"{st.secrets['api_address']}/v2/generate_id").json()["random_id"]
     controller.set("dude_result_id", random_id)
     st.success(f"Identificador de resultados: **{random_id}**", icon="📄")
     st.info(f"Procesando **{len(uploaded_file)}** archivos... 🔄")
         
-    url = 'http://localhost:5000/v2/dude'
+    url = f"{st.secrets['api_address']}/v2/dude"
     files = [('files', (file.name, file, file.type)) for file in uploaded_file]
     threading.Thread(target=requests.post, args=(url,), kwargs={"files": files, "data": {"result_id": str(random_id)}}).start()
     st.caption("Procesando archivos...")
@@ -68,14 +68,14 @@ if controller.get("dude_result_id"):
 
         if st.download_button(
             label="Descargar resultados completos en CSV",
-            data=requests.get(f"http://localhost:5000/v2/export/{controller.get('dude_result_id')}").content,
+            data=requests.get(f"{st.secrets['api_address']}/v2/export/{controller.get('dude_result_id')}").content,
             file_name=f"{controller.get('dude_result_id')}.csv",
             mime="text/csv",
             help="Descargar los resultados completos en formato CSV",
             use_container_width=True
         ):
             st.toast("Descargando resultados...", icon="📥")
-            requests.delete(f"http://localhost:5000/v2/export/{controller.get('dude_result_id')}")
+            requests.delete(f"{st.secrets['api_address']}/v2/export/{controller.get('dude_result_id')}")
     except:
         pass
 

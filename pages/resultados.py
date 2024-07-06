@@ -7,7 +7,7 @@ st.logo("https://procesosyservicios.net.co/wp-content/uploads/2019/10/LETRA-GRIS
 st.title("Resultados 📁")
 st.caption("V1.5 - Todo en un solo lugar 📊")
 
-status = requests.get("http://localhost:5000/v2/status").json()
+status = requests.get(f"{st.secrets['api_address']}/v2/status").json()
 status_ids = [status["result_id"] for status in status]
 
 for item in status:
@@ -21,7 +21,7 @@ completed, in_progress, failed = st.tabs(["Completados", "En progreso", "Fallido
 def download_csv(result_id):
     if st.download_button(
         label="Descargar CSV",
-        data=requests.get(f"http://localhost:5000/v2/export/{result_id}").content,
+        data=requests.get(f"{st.secrets['api_address']}/v2/export/{result_id}").content,
         file_name=f"{result_id}.csv",
         mime="text/csv",
         help="Descargar los resultados completos en formato CSV",
@@ -65,9 +65,9 @@ with completed:
                     download_csv(resultado['result_id'])  
 
                 if delete_btn.button(f"🗑 Eliminar Resultado", key=f"delete_{resultado['result_id']}", use_container_width=True):
-                    requests.delete(f"http://localhost:5000/v2/status/{resultado['result_id']}")
-                    requests.delete(f"http://localhost:5000/v1/resultados/{resultado['result_id']}")
-                    requests.delete(f"http://localhost:5000/v2/export/{resultado['result_id']}")
+                    requests.delete(f"{st.secrets['api_address']}/v2/status/{resultado['result_id']}")
+                    requests.delete(f"{st.secrets['api_address']}/v1/resultados/{resultado['result_id']}")
+                    requests.delete(f"{st.secrets['api_address']}/v2/export/{resultado['result_id']}")
                     st.success(f"Resultado {resultado['result_id']} eliminado con éxito.")
                     st.toast("Resultado eliminado con éxito.", icon="✅")
                     st.rerun()
@@ -124,9 +124,9 @@ with failed:
                 delete_btn = st.empty()
 
                 if delete_btn.button(f"🗑 Eliminar Resultado", key=f"delete_{resultado['result_id']}", use_container_width=True):
-                    requests.delete(f"http://localhost:5000/v2/status/{resultado['result_id']}")
-                    requests.delete(f"http://localhost:5000/v1/resultados/{resultado['result_id']}")
-                    requests.delete(f"http://localhost:5000/v2/export/{resultado['result_id']}")
+                    requests.delete(f"{st.secrets['api_address']}/v2/status/{resultado['result_id']}")
+                    requests.delete(f"{st.secrets['api_address']}/v1/resultados/{resultado['result_id']}")
+                    requests.delete(f"{st.secrets['api_address']}/v2/export/{resultado['result_id']}")
                     st.success(f"Resultado {resultado['result_id']} eliminado con éxito.")
                     st.toast("Resultado eliminado con éxito.", icon="✅")
                     st.rerun()
