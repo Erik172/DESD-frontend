@@ -1,4 +1,5 @@
 streamlit-cookies-controller
+streamlit-authenticator
 streamlit
 aiohttp
 requests

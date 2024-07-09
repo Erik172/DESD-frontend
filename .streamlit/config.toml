@@ -3,3 +3,6 @@ maxUploadSize = 1000
 
 [theme]
 base = "light"
+
+[client]
+showSidebarNavigation = false
