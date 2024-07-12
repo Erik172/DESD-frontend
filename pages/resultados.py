@@ -4,7 +4,7 @@ from datetime import datetime
 from auth import authenticate
 from components import lateral_menu
 
-st.logo("https://procesosyservicios.net.co/wp-content/uploads/2019/10/LETRA-GRIS.png")
+# st.logo("https://procesosyservicios.net.co/wp-content/uploads/2019/10/LETRA-GRIS.png")
 
 authenticator = authenticate()
 
@@ -63,6 +63,8 @@ if st.session_state['authentication_status']:
                         modelos.append("✂ Corte información")
                     if resultado["duplicate"]:
                         modelos.append("2️⃣ Duplicados")
+                    if resultado["folio"]:
+                        modelos.append("📄 Folio")
 
                     st.write(f"Modelos: {', '.join(modelos)}")
 
@@ -106,6 +108,8 @@ if st.session_state['authentication_status']:
                         modelos.append("✂ Corte información")
                     if resultado["duplicate"]:
                         modelos.append("2️⃣ Duplicados")
+                    if resultado["folio"]:
+                        modelos.append("📄 Folio")
 
                     st.write(f"Modelos: {', '.join(modelos)}")
 

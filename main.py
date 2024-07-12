@@ -4,16 +4,17 @@ from components import lateral_menu
 
 authenticator = authenticate()
 
-st.logo("https://procesosyservicios.net.co/wp-content/uploads/2019/10/LETRA-GRIS.png")
-st.image("https://procesosyservicios.net.co/wp-content/uploads/2019/10/LETRA-GRIS.png", width=120)
+# st.logo("https://procesosyservicios.net.co/wp-content/uploads/2019/10/LETRA-GRIS.png")
+st.image("images/logo.png", width=150)
 
 if st.session_state['authentication_status']:
-    lateral_menu(authenticator)
+    lateral_menu(authenticator, show_logo=False)
     st.subheader("DESD - Detección de Errores en Documentos Escaneados mediante Inteligencia Artificial")
 
     st.page_link('main.py', label='Home', icon='🏠', disabled=True)
     st.page_link('pages/auditoria.py', label='Auditoría', icon='🔍', disabled=False, help='Pagina auditoria')
     st.page_link('pages/duplicidad.py', label='Duplicidad', icon='2️⃣', disabled=False, help='Pagina donde se encuentra el modulo de Detección de duplicados')
+    st.page_link('pages/folio.py', label='Folio', icon='📄', disabled=False, help='Pagina donde se encuentra el modulo de Detección de folios')
     st.page_link('pages/resultados.py', label='Resultados', icon='📂', help='Pagina donde se encuentra todos los reportes de todos los modelos corridos')
 
     st.divider()

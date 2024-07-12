@@ -3,10 +3,10 @@ from auth import authenticate
 
 authenticator = authenticate()
 
-st.logo("https://procesosyservicios.net.co/wp-content/uploads/2019/10/LETRA-GRIS.png")
-st.image("https://procesosyservicios.net.co/wp-content/uploads/2019/10/LETRA-GRIS.png", width=120)
+# st.logo("https://procesosyservicios.net.co/wp-content/uploads/2019/10/LETRA-GRIS.png")
+st.image("images/logo.png", width=140)
 
-st.info("**Username:** tester    **Password:** tester")
+# st.info("**Username:** tester    **Password:** tester")
 authenticator.login()
 if st.session_state["authentication_status"] is False:
     st.error('Username/password es incorrecto')

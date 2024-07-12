@@ -1,6 +1,6 @@
 from streamlit_cookies_controller import CookieController, RemoveEmptyElementContainer
+from components import lateral_menu, work_status_component
 from auth import authenticate
-from components import lateral_menu
 import streamlit as st
 import requests
 import threading
@@ -11,8 +11,7 @@ RemoveEmptyElementContainer()
 
 authenticator = authenticate()
 
-st.logo("https://procesosyservicios.net.co/wp-content/uploads/2019/10/LETRA-GRIS.png")
-
+# st.logo("https://procesosyservicios.net.co/wp-content/uploads/2019/10/LETRA-GRIS.png")
 
 if st.session_state['authentication_status']:
     lateral_menu(authenticator)
@@ -27,11 +26,6 @@ if st.session_state['authentication_status']:
     )
 
     uploaded_file = st.file_uploader("Subir Archivos", type=["jpg", "jpeg", "png", "tif", "tiff", "pdf"], accept_multiple_files=True)
-
-    def work_status(result_id):
-        url = f"{st.secrets['api_address']}/v2/status/{result_id}"
-        response = requests.get(url)
-        return response
 
     def process_files(upload_files):
         global models
@@ -60,61 +54,7 @@ if st.session_state['authentication_status']:
                 download = st.empty()
             process_files(uploaded_file)
 
-    if controller.get('desd_result_id') != None:
-        st.subheader(f"Estado de ({controller.get('desd_result_id')})")
-        porcentaje = st.empty()
-        files_process = st.empty()
-        data = st.empty()
-        error_count = 0
-        download_partial = st.empty()
-        while True:
-            status = work_status(controller.get('desd_result_id'))
-            if status.status_code == 200:
-                status = status.json()
-                if status["status"] == "in_progress":
-                    porcentaje.progress(float(status["percentage"]) / 100.0, f'{round(status["percentage"], 1)}% - {status["files_processed"]} / {status["total_files"]} completados')
-                    files_process.info(f"Procesando archivos...   {status['files_processed']} de {status['total_files']} completados")
-                else:
-                    download_partial.empty()
-                    porcentaje.progress(1.0, "100% completado")
-                    files_process.success("Procesamiento completado")
-                    break
-            elif status.status_code == 404:
-                if error_count == 2:
-                    files_process.error("Demasiados intentos fallidos... abortando")
-                    break
-                
-                error_count += 1
-                files_process.error(f"No se encontraron resultados previos... reintentando en 5 segundos, intento {error_count}")	
-                time.sleep(5)
-
-            else:
-                files_process.error("Error al obtener los resultados")
-                break
-            
-            # data.write(status)
-        try:
-            st.info(f'Total de archivos procesados: {status["total_files"]}')
-
-            if st.download_button(
-                label="Descargar resultados completos en CSV",
-                data=requests.get(f"{st.secrets['api_address']}/v2/export/{controller.get('desd_result_id')}").content,
-                file_name=f"{controller.get('desd_result_id')}.csv",
-                mime="text/csv",
-                help="Descargar los resultados completos en formato CSV",
-                use_container_width=True
-            ):
-                st.toast("Descargando resultados...", icon="📥")
-                requests.delete(f"{st.secrets['api_address']}/v2/export/{controller.get('desd_result_id')}")
-        except:
-            pass
-
-        if st.button("Limpiar", help="Eliminar resultados previos", use_container_width=True):
-            controller.remove('desd_result_id')
-            st.rerun()
-
-    else:
-        st.caption("No hay resultados previos para mostrar")
+    work_status_component(controller, 'desd_result_id')
 else:
     st.error("Debes iniciar sesión para acceder a esta página 🚫")
     if st.button("Iniciar sesión", help="Iniciar sesión para acceder a la página de auditoría", use_container_width=True):

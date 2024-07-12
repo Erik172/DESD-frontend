@@ -1,5 +1,5 @@
 from streamlit_cookies_controller import CookieController, RemoveEmptyElementContainer
-from components import lateral_menu
+from components import lateral_menu, work_status_component
 from auth import authenticate
 import streamlit as st
 import threading
@@ -21,11 +21,6 @@ if st.session_state['authentication_status']:
 
     uploaded_file = st.file_uploader("Subir Archivos", type=["jpg", "jpeg", "png", "tif", "tiff", "pdf"], accept_multiple_files=True)
 
-    def work_status(result_id):
-        url =f"{st.secrets['api_address']}/v2/status/{result_id}"
-        response = requests.get(url)
-        return response
-
     def process_uploaded_images(uploaded_file):
         random_id = requests.get(f"{st.secrets['api_address']}/v2/generate_id").json()["random_id"]
         controller.set("dude_result_id", random_id)
@@ -43,55 +38,7 @@ if st.session_state['authentication_status']:
         if uploaded_file:
             process_uploaded_images(uploaded_file)
 
-    if controller.get('dude_result_id') is not None:
-        st.subheader(f"Estado de ({controller.get('dude_result_id')})")
-        porcentaje = st.empty()
-        files_process = st.empty()
-        data = st.empty()
-        error_count = 0
-        download_partial = st.empty()
-        while True:
-            status = work_status(controller.get("dude_result_id"))
-            if status.status_code == 200:
-                status = status.json()
-                if status["status"] == "in_progress":
-                    porcentaje.progress(float(status["percentage"]) / 100.0, f'{round(status["percentage"], 1)}% - {status["files_processed"]} / {status["total_files"]} completados')
-                    files_process.info(f"Procesando archivos...   {status['files_processed']} de {status['total_files']} completados")
-                else:
-                    download_partial.empty()
-                    porcentaje.progress(1.0, "100% completado")
-                    files_process.success("Procesamiento completado")
-                    break
-            elif status.status_code == 404:
-                controller.remove("dude_result_id")
-                break
-
-            else:
-                files_process.error("Error al obtener los resultados")
-                st.rerun()
-                break
-
-        try:
-            st.info(f'Total de archivos procesados: {status["total_files"]}')
-
-            if st.download_button(
-                label="Descargar resultados completos en CSV",
-                data=requests.get(f"{st.secrets['api_address']}/v2/export/{controller.get('dude_result_id')}").content,
-                file_name=f"{controller.get('dude_result_id')}.csv",
-                mime="text/csv",
-                help="Descargar los resultados completos en formato CSV",
-                use_container_width=True
-            ):
-                st.toast("Descargando resultados...", icon="📥")
-                requests.delete(f"{st.secrets['api_address']}/v2/export/{controller.get('dude_result_id')}")
-        except:
-            pass
-
-        if st.button("Limpiar", help="Eliminar resultados previos", use_container_width=True):
-            controller.remove("dude_result_id")
-            st.rerun()
-    else:
-        st.caption("No hay resultados previos para mostrar")
+    work_status_component(controller, 'dude_result_id')
 
 else:
     st.error("Debes iniciar sesión para acceder a esta página 🚫")
