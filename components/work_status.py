@@ -43,6 +43,8 @@ def work_status_component(controller: CookieController, cookie_name: str):
             else:
                 files_process.error("Error al obtener los resultados")
                 break
+        
+        summary.write(status["summary"])
         try:
             st.info(f'Total de archivos procesados: {status["total_files"]}')
 
