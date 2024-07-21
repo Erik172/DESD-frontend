@@ -27,6 +27,10 @@ def work_status_component(controller: CookieController, cookie_name: str):
                     porcentaje.progress(1.0, "100% completado")
                     files_process.success("Procesamiento completado")
                     break
+
+                if status["summary"]:
+                    st.write(status["summary"])
+                    
             elif status.status_code == 404:
                 if error_count == 2:
                     files_process.error("Demasiados intentos fallidos... abortando")
