@@ -71,7 +71,7 @@ if st.session_state['authentication_status']:
                     download_btn, delete_btn = st.columns(2)
 
                     if resultado["summary"]:
-                        st.write(f"Resumen: {resultado['summary']}")
+                        st.text_area("Resumen", value=resultado["summary"], key=f"summary_{resultado['result_id']}", disabled=False)
 
                     if download_btn.button(f"📥 Descargar CSV", use_container_width=True, key=f"descargar_{resultado['result_id']}"):
                         download_csv(resultado['result_id'])  
