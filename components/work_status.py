@@ -15,6 +15,7 @@ def work_status_component(controller: CookieController, cookie_name: str):
         files_process = st.empty()
         error_count = 0
         download_partial = st.empty()
+        summary = st.empty()
         while True:
             status = work_status(controller.get(cookie_name))
             if status.status_code == 200:
@@ -28,7 +29,7 @@ def work_status_component(controller: CookieController, cookie_name: str):
                     files_process.success("Procesamiento completado")
                     break
 
-                st.write(status["summary"])
+                summary.write(status["summary"])
 
             elif status.status_code == 404:
                 if error_count == 2:
