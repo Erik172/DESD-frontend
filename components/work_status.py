@@ -28,8 +28,8 @@ def work_status_component(controller: CookieController, cookie_name: str):
                     porcentaje.progress(1.0, "100% completado")
                     files_process.success("Procesamiento completado")
                     break
-
-                summary.write(status["summary"])
+                if status['summary']:
+                    summary.write(status["summary"])
 
             elif status.status_code == 404:
                 if error_count == 2:
@@ -44,7 +44,6 @@ def work_status_component(controller: CookieController, cookie_name: str):
                 files_process.error("Error al obtener los resultados")
                 break
         
-        summary.write(status["summary"])
         try:
             st.info(f'Total de archivos procesados: {status["total_files"]}')
 
@@ -58,6 +57,8 @@ def work_status_component(controller: CookieController, cookie_name: str):
             ):
                 st.toast("Descargando resultados...", icon="📥")
                 requests.delete(f"{st.secrets['api_address']}/v2/export/{controller.get(cookie_name)}")
+
+            summary.write(status["summary"])
         except:
             pass
 
