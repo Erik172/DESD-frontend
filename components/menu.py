@@ -3,8 +3,8 @@ import streamlit as st
 def lateral_menu(authenticator, show_logo: bool = True):
     with st.sidebar:
         if show_logo:
-            # st.image("images/logo.png", width=80)
-            st.logo("https://procesosyservicios.net.co/wp-content/uploads/2019/10/LETRA-GRIS.png", icon_image='images/logo.png')
+            st.image("images/logo.png", width=100)
+            # st.logo("https://procesosyservicios.net.co/wp-content/uploads/2019/10/LETRA-GRIS.png", icon_image='images/logo.png')
 
         st.caption("Developer Version 2.0")
         st.subheader(f"Hola, {st.session_state['username']} 👋")           

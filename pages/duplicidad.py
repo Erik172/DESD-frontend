@@ -14,8 +14,6 @@ authenticator = authenticate()
 if st.session_state['authentication_status']:
     lateral_menu(authenticator) 
 
-    st.logo("https://procesosyservicios.net.co/wp-content/uploads/2019/10/LETRA-GRIS.png")
-
     st.title("DuDe (Duplicate Detection) Detección de duplicados 2️⃣")
     st.caption("V2.0 - Estable, con alta precisión 📊")
 
